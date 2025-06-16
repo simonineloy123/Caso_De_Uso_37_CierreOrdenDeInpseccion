@@ -1,0 +1,9 @@
+.jfx-button {
+    -fx-background-color: red;  /* Fondo azul */
+    -fx-text-fill: white;  /* Texto blanco */
+    -fx-padding: 10px 20px;  /* Relleno alrededor del texto */
+    -fx-font-size: 14px;  /* Tamaño de fuente */
+    -fx-border-radius: 5px;  /* Bordes redondeados */
+    -fx-background-radius: 5px;  /* Bordes redondeados */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 2); /* Sombra */
+}

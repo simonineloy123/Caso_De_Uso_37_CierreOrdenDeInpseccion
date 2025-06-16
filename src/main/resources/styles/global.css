@@ -1,0 +1,15 @@
+/* global.css */
+
+/* Importación de otros archivos CSS */
+@import url("jfoenix-components.css");
+
+/* Estilos generales para la aplicación */
+* {
+    -fx-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    -fx-font-size: 14px;
+    -fx-base: #f0f0f0;
+}
+
+.root {
+    -fx-background-color: #f7f7f7;
+}
