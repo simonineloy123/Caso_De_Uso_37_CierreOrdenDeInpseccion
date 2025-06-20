@@ -1,5 +1,6 @@
 package com.example.cierreordendeinspeccion;
 
+import com.example.cierreordendeinspeccion.Boundary.PantallaOrdenInspeccion;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -54,8 +55,9 @@ public class HelloApplication extends Application {
                     showAlert(Alert.AlertType.INFORMATION,
                             "¡Éxito!",
                             "Inicio de sesión exitoso. Bienvenido " + usuario.getUsername());
-                    openWelcomeWindow(usuario.getUsername());
-                    primaryStage.close(); // Cierra la ventana de login
+                    PantallaOrdenInspeccion pantallaOrdenInspeccion = new PantallaOrdenInspeccion();
+                    pantallaOrdenInspeccion.habilitarVentana(usuario.getUsername());
+                    primaryStage.close();
                 }
 
             } catch (Exception e) {
@@ -86,26 +88,6 @@ public class HelloApplication extends Application {
         alert.showAndWait();
     }
 
-
-    private void openWelcomeWindow(String username) {
-        Stage welcomeStage = new Stage();
-        welcomeStage.setTitle("Bienvenido");
-
-        // Crear la interfaz de la nueva ventana
-        VBox welcomeVBox = new VBox(20);
-        welcomeVBox.setPadding(new Insets(40));
-        //welcomeVBox.setAlignment(Pos.CENTER);
-
-        Label welcomeText = new Label("Bienvenido " + username + " - CU 37 - Cerrar orden de inspección");
-        welcomeText.setFont(Font.font("Arial", 20));
-        welcomeText.setStyle("-fx-fill: black;");
-
-        welcomeVBox.getChildren().add(welcomeText);
-
-        Scene welcomeScene = new Scene(welcomeVBox, 1200, 900);
-        welcomeStage.setScene(welcomeScene);
-        welcomeStage.show();
-    }
 
     public static void main(String[] args) {
         launch();
