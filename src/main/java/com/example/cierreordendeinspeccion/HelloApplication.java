@@ -1,6 +1,7 @@
 package com.example.cierreordendeinspeccion;
 
 import com.example.cierreordendeinspeccion.Boundary.PantallaOrdenInspeccion;
+import com.example.cierreordendeinspeccion.Entity.Usuario;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -11,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class HelloApplication extends Application {
@@ -56,7 +56,7 @@ public class HelloApplication extends Application {
                             "¡Éxito!",
                             "Inicio de sesión exitoso. Bienvenido " + usuario.getUsername());
                     PantallaOrdenInspeccion pantallaOrdenInspeccion = new PantallaOrdenInspeccion();
-                    pantallaOrdenInspeccion.habilitarVentana(usuario.getUsername());
+                    pantallaOrdenInspeccion.habilitarVentana(em, usuario.getUsername());
                     primaryStage.close();
                 }
 

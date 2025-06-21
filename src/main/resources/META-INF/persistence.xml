@@ -7,7 +7,11 @@
 
     <persistence-unit name="myJpaUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>com.example.cierreordendeinspeccion.Usuario</class> <!-- Clase de la entidad -->
+        <!-- Agregar clases de  entidad aca -->
+        <class>com.example.cierreordendeinspeccion.Entity.Usuario</class>
+        <class>com.example.cierreordendeinspeccion.Entity.Empleado</class>
+        <class>com.example.cierreordendeinspeccion.Entity.OrdenInspeccion</class>
+        <class>com.example.cierreordendeinspeccion.Entity.Estado</class>
         <properties>
             <!-- Configuración de la base de datos -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />

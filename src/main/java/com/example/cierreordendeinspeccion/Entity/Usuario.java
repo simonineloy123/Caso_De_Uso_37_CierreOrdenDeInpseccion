@@ -1,9 +1,9 @@
-package com.example.cierreordendeinspeccion;
+package com.example.cierreordendeinspeccion.Entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "Usuario")
 public class Usuario {
 
     @Id
@@ -48,6 +48,11 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String obtenerEmpleado(EntityManager em, String username) {
+        Empleado empleado = new Empleado();
+        return empleado.obtenerEmpleado(em,username).getNombre();
     }
 
 }

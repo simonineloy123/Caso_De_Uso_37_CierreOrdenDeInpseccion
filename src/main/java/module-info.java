@@ -11,5 +11,6 @@ module com.example.cierreordendeinspeccion {
     exports com.example.cierreordendeinspeccion;
 
     opens com.example.cierreordendeinspeccion to org.hibernate.orm.core;
-    opens com.example.cierreordendeinspeccion.Entity to javafx.base;
+    exports com.example.cierreordendeinspeccion.Entity;
+    opens com.example.cierreordendeinspeccion.Entity to javafx.base, org.hibernate.orm.core;
 }

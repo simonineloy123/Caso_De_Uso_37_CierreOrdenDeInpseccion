@@ -1,6 +1,9 @@
 package com.example.cierreordendeinspeccion.Boundary;
 
+import com.example.cierreordendeinspeccion.Controller.GestorOrdenInspeccion;
 import com.example.cierreordendeinspeccion.Entity.OrdenInspeccion;
+import jakarta.persistence.EntityManager;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -14,12 +17,13 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class PantallaOrdenInspeccion {
 
-    public void habilitarVentana(String username) {
+    public void habilitarVentana(EntityManager em, String username) {
         Stage welcomeStage = new Stage();
         welcomeStage.setTitle("Bienvenido");
 
@@ -28,7 +32,9 @@ public class PantallaOrdenInspeccion {
         welcomeVBox.setPadding(new Insets(40));
         welcomeVBox.setAlignment(Pos.CENTER);
 
-        Label welcomeText = new Label("Bienvenido " + username + " - Red Sismica");
+        GestorOrdenInspeccion gestorOrdenInspeccion = new GestorOrdenInspeccion();
+
+        Label welcomeText = new Label("Bienvenido " + gestorOrdenInspeccion.buscarUsuarioLogueado(em, username) + " - Red Sismica");
         welcomeText.setFont(Font.font("Arial", 20));
         welcomeText.setStyle("-fx-fill: black;");
 
@@ -40,7 +46,7 @@ public class PantallaOrdenInspeccion {
 
         cerrarOrdenButton.setOnAction(event -> {
                 PantallaOrdenInspeccion pantallaOrdenInspeccion = new PantallaOrdenInspeccion();
-                pantallaOrdenInspeccion.cerrarOrdenDeInspeccion(username);
+                pantallaOrdenInspeccion.cerrarOrdenDeInspeccion(em, username);
                 welcomeStage.close();
             });
 
@@ -65,7 +71,7 @@ public class PantallaOrdenInspeccion {
         welcomeStage.show();
     }
 
-    public void cerrarOrdenDeInspeccion(String username) {
+    public void cerrarOrdenDeInspeccion(EntityManager em, String username) {
         Stage welcomeStage = new Stage();
         welcomeStage.setTitle("CU 37 - Cerrar Orden de Inpsección");
 
@@ -73,7 +79,9 @@ public class PantallaOrdenInspeccion {
         welcomeVBox.setPadding(new Insets(40));
         //welcomeVBox.setAlignment(Pos.CENTER);
 
-        Label welcomeText = new Label("CU 37 - Cerrar Orden de Inspección | Usuario logueado: " + username);
+        GestorOrdenInspeccion gestorOrdenInspeccion = new GestorOrdenInspeccion();
+
+        Label welcomeText = new Label("CU 37 - Cerrar Orden de Inspección | Usuario logueado: " + gestorOrdenInspeccion.buscarUsuarioLogueado(em, username));
         welcomeText.setFont(Font.font("Arial", 20));
         welcomeText.setStyle("-fx-fill: black;");
 
@@ -84,31 +92,32 @@ public class PantallaOrdenInspeccion {
         colNumero.setCellValueFactory(new PropertyValueFactory<>("numero"));
 
         TableColumn<OrdenInspeccion, String> colEstado = new TableColumn<>("Estado");
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        colEstado.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getEstado().getNombre())
+        );
 
         TableColumn<OrdenInspeccion, String> colFecha = new TableColumn<>("Fecha Finalización");
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaFinalizacion"));
 
-        TableColumn<OrdenInspeccion, String> colResponsable = new TableColumn<>("Responsable");
-        colResponsable.setCellValueFactory(new PropertyValueFactory<>("responsable"));
+        TableColumn<OrdenInspeccion, String> colEstacion = new TableColumn<>("Nombre Estación");
+        colEstacion.setCellValueFactory(new PropertyValueFactory<>("nombreEstacion"));
 
-        TableColumn<OrdenInspeccion, String> colEstacion = new TableColumn<>("Estación");
-        colEstacion.setCellValueFactory(new PropertyValueFactory<>("estacion"));
+        TableColumn<OrdenInspeccion, String> colSismografo = new TableColumn<>("ID Sismógrafo");
+        colSismografo.setCellValueFactory(new PropertyValueFactory<>("idSismografo"));
 
-        TableColumn<OrdenInspeccion, String> colSismografo = new TableColumn<>("Sismógrafo");
-        colSismografo.setCellValueFactory(new PropertyValueFactory<>("sismografo"));
-
-        tabla.getColumns().addAll(colNumero, colEstado, colFecha, colResponsable, colEstacion, colSismografo);
+        tabla.getColumns().addAll(colNumero, colEstado, colFecha, colEstacion, colSismografo);
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Cargar datos dummy
-        ObservableList<OrdenInspeccion> datos = FXCollections.observableArrayList(
-                new OrdenInspeccion(1, "Completamente Realizada", "2025-06-18", "Juan Pérez", "Estación Norte", "S-001"),
-                new OrdenInspeccion(2, "Completamente Realizada", "2025-06-17", "Juan Pérez", "Estación Sur", "S-002"),
-                new OrdenInspeccion(3, "Completamente Realizada", "2025-06-15", "Juan Pérez", "Estación Este", "S-003")
-        );
+        List<OrdenInspeccion> listaOrdenes = gestorOrdenInspeccion.buscarOrdenesInspeccionRealizadas(em);
+        // Ordenar la lista (List)
+        List<OrdenInspeccion> listaOrdenada = gestorOrdenInspeccion.ordenarPorFechaFinalizacion(listaOrdenes);
 
-        tabla.setItems(datos);
+        // Convertir a ObservableList para la tabla
+        ObservableList<OrdenInspeccion> ordenesObservable = FXCollections.observableArrayList(listaOrdenada);
+
+        // Setear en tabla
+        tabla.setItems(ordenesObservable);
 
         tabla.setRowFactory(tv -> {
             TableRow<OrdenInspeccion> row = new TableRow<>();
@@ -128,7 +137,7 @@ public class PantallaOrdenInspeccion {
         btnVolver.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
         btnVolver.setOnAction(e -> {
             welcomeStage.close(); // cerrar esta
-            habilitarVentana(username); // volver a la anterior
+            habilitarVentana(em, username); // volver a la anterior
         });
 
         Button btnCancelar = new Button("Cancelar");
