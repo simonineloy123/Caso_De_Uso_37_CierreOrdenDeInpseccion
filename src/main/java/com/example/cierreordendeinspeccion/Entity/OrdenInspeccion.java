@@ -21,22 +21,33 @@ public class OrdenInspeccion {
     @JoinColumn(name = "estado_id", nullable = false)
     private Estado estado;
 
+    @ManyToOne
+    @JoinColumn(name = "estacion_id", nullable = false)
+    private EstacionSismografica estacion;
+
+    @ManyToOne
+    @JoinColumn(name = "sismografo_id", nullable = false)
+    private Sismografo sismografo;
+
     @Column(name = "fechaFinalizacion", nullable = false)
     private String fechaFinalizacion;
 
-
-    public OrdenInspeccion(int numero, Estado estado, String fechaFinalizacion) {
+    public OrdenInspeccion(int numero, Estado estado, String fechaFinalizacion, Sismografo sismografo, EstacionSismografica estacion) {
         this.numero = numero;
         this.estado = estado;
         this.fechaFinalizacion = fechaFinalizacion;
+        this.sismografo = sismografo;
+        this.estacion = estacion;
     }
 
     public OrdenInspeccion() {
     }
 
+    public EstacionSismografica getEstacion() { return estacion; }
     public int getNumero() { return numero; }
     public Estado getEstado() { return estado; }
     public String getFechaFinalizacion() { return fechaFinalizacion; }
+    public Sismografo getSismografo() { return sismografo; }
 
     public List<OrdenInspeccion> buscarOrdenesInspeccionRealizadas(EntityManager em) {
 

@@ -10,7 +10,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -88,8 +87,12 @@ public class PantallaOrdenInspeccion {
         // Crear tabla
         TableView<OrdenInspeccion> tabla = new TableView<>();
 
-        TableColumn<OrdenInspeccion, Long> colNumero = new TableColumn<>("N° Orden");
-        colNumero.setCellValueFactory(new PropertyValueFactory<>("numero"));
+        TableColumn<OrdenInspeccion, String> colNumero = new TableColumn<>("N° Orden");
+
+        colNumero.setCellValueFactory(cellData -> {
+            OrdenInspeccion orden = cellData.getValue();
+            return new SimpleStringProperty(String.valueOf(orden.getNumero()));
+        });
 
         TableColumn<OrdenInspeccion, String> colEstado = new TableColumn<>("Estado");
         colEstado.setCellValueFactory(cellData ->
@@ -97,26 +100,32 @@ public class PantallaOrdenInspeccion {
         );
 
         TableColumn<OrdenInspeccion, String> colFecha = new TableColumn<>("Fecha Finalización");
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaFinalizacion"));
+        colFecha.setCellValueFactory(cellData -> {
+            OrdenInspeccion orden = cellData.getValue();
+            return new SimpleStringProperty(orden.getFechaFinalizacion().toString());
+        });
 
         TableColumn<OrdenInspeccion, String> colEstacion = new TableColumn<>("Nombre Estación");
-        colEstacion.setCellValueFactory(new PropertyValueFactory<>("nombreEstacion"));
+        colEstacion.setCellValueFactory(cellData -> {
+            OrdenInspeccion orden = cellData.getValue();
+            return new SimpleStringProperty(orden.getEstacion().getNombre());
+        });
 
         TableColumn<OrdenInspeccion, String> colSismografo = new TableColumn<>("ID Sismógrafo");
-        colSismografo.setCellValueFactory(new PropertyValueFactory<>("idSismografo"));
+        colSismografo.setCellValueFactory(cellData -> {
+            OrdenInspeccion orden = cellData.getValue();
+            return new SimpleStringProperty(orden.getSismografo().getIdSismografo());
+        });
 
         tabla.getColumns().addAll(colNumero, colEstado, colFecha, colEstacion, colSismografo);
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Cargar datos dummy
         List<OrdenInspeccion> listaOrdenes = gestorOrdenInspeccion.buscarOrdenesInspeccionRealizadas(em);
-        // Ordenar la lista (List)
+
         List<OrdenInspeccion> listaOrdenada = gestorOrdenInspeccion.ordenarPorFechaFinalizacion(listaOrdenes);
 
-        // Convertir a ObservableList para la tabla
         ObservableList<OrdenInspeccion> ordenesObservable = FXCollections.observableArrayList(listaOrdenada);
 
-        // Setear en tabla
         tabla.setItems(ordenesObservable);
 
         tabla.setRowFactory(tv -> {
